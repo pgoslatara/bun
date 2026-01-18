@@ -100,9 +100,11 @@ try {
     await iterate();
 
     {
-      Bun.gc(true);
-      await Bun.sleep(100);
-      Bun.gc(true);
+      // Multiple GC passes with sleep to ensure objects are collected
+      for (let gc = 0; gc < 3; gc++) {
+        Bun.gc(true);
+        await Bun.sleep(50);
+      }
       const stats = getHeapStats();
       expect(stats.Response || 0).toBeLessThanOrEqual(threshold);
       expect(stats.Promise || 0).toBeLessThanOrEqual(threshold);
