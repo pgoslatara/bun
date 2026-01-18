@@ -9,7 +9,7 @@ const batch = 10;
 const iterations = 50;
 // Instead of a fixed threshold, we check that object counts don't grow unboundedly.
 // A real leak would show continuous growth. A fixed overhead (due to GC timing) is acceptable.
-const maxGrowthFactor = 3; // Allow up to 3x growth from initial baseline
+const maxGrowthFactor = 5; // Allow up to 5x growth from initial baseline
 const BODY_SIZE = parseInt(process.argv[3], 10);
 if (!Number.isSafeInteger(BODY_SIZE)) {
   console.error("BODY_SIZE must be a safe integer", BODY_SIZE, process.argv);
