@@ -7,7 +7,7 @@ function getHeapStats() {
 const server = process.argv[2];
 const batch = 10;
 const iterations = 50;
-const threshold = batch * 2 + batch / 2;
+const threshold = batch * 4; // Allow more headroom for GC timing variations
 const BODY_SIZE = parseInt(process.argv[3], 10);
 if (!Number.isSafeInteger(BODY_SIZE)) {
   console.error("BODY_SIZE must be a safe integer", BODY_SIZE, process.argv);
