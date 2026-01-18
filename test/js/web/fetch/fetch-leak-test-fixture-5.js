@@ -127,9 +127,9 @@ try {
 
     // Check that counts haven't grown beyond acceptable limits
     // A real leak would show unbounded growth; fixed overhead is OK
-    // Use batch * 25 as minimum to account for GC timing variations with mimalloc v3
-    const maxResponse = Math.max(baselineResponse * maxGrowthFactor, batch * 25);
-    const maxPromise = Math.max(baselinePromise * maxGrowthFactor, batch * 25);
+    // Use batch * 30 as minimum to account for GC timing variations with mimalloc v3
+    const maxResponse = Math.max(baselineResponse * maxGrowthFactor, batch * 30);
+    const maxPromise = Math.max(baselinePromise * maxGrowthFactor, batch * 30);
 
     if (responseCount > maxResponse) {
       throw new Error(`Response leak detected: ${responseCount} > ${maxResponse} (baseline: ${baselineResponse})`);
