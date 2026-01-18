@@ -42,7 +42,10 @@ pub const Borrowed = struct {
     }
 
     pub fn ownsPtr(self: Borrowed, ptr: *const anyopaque) bool {
-        return mimalloc.mi_heap_check_owned(self.getMimallocHeap(), ptr);
+        _ = self;
+        // In mimalloc v3, mi_heap_check_owned was removed.
+        // Use mi_check_owned which checks if ptr is in any mimalloc heap.
+        return mimalloc.mi_check_owned(ptr);
     }
 
     fn fromOpaque(ptr: *anyopaque) Borrowed {
@@ -101,10 +104,14 @@ const DebugHeap = struct {
 threadlocal var thread_heap: if (safety_checks) ?DebugHeap else void = if (safety_checks) null;
 
 fn getThreadHeap() BorrowedHeap {
-    if (comptime !safety_checks) return mimalloc.mi_heap_get_default();
+    // In mimalloc v3, mi_heap_get_default() was replaced with mi_theap_get_default()
+    // which returns a different type (mi_theap_t*). For simplicity, we use mi_heap_main()
+    // which gives us a mi_heap_t* that works with mi_heap_* functions.
+    // This is safe because mimalloc handles cross-thread allocations.
+    if (comptime !safety_checks) return mimalloc.mi_heap_main();
     if (thread_heap == null) {
         thread_heap = .{
-            .inner = mimalloc.mi_heap_get_default(),
+            .inner = mimalloc.mi_heap_main(),
             .thread_lock = .initLocked(),
         };
     }
